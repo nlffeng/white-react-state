@@ -57,9 +57,9 @@ function Test(props) {
   return (
     <div>
       <span>{count}</span>
-      <button onCLick={increment}>+</button>
-      <button onCLick={decrement}>-</button>
-      <button onCLick={() => asyncDecrement(1, 3, 5)}>异步处理</button>
+      <button onClick={increment}>+</button>
+      <button onClick={decrement}>-</button>
+      <button onClick={() => asyncDecrement(1, 3, 5)}>异步处理</button>
     </div>
   );
 }
