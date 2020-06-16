@@ -4,8 +4,9 @@
 
 import { useEffect, useRef } from 'react';
 import useUpdate from './useUpdate';
-import store from './storeInstance';
+import store from '../storeInstance';
 
+// TODO 加入优化功能，第二个参数可以浅比较指定 state 判断是否触发组件更新
 export default function useModel(key: string) {
   if (!key) {
     console.error(`useModel：缺少参数 key`);

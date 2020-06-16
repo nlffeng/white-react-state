@@ -1,11 +1,11 @@
 # white-react-state
 
-基于 useState 实现的轻量状态管理，没有 redux，没有 redux-saga
+基于 useState 实现的轻量状态管理
 
 ### Install
 
 ```bash
-npm install -save white-react-state
+npm i -S white-react-state
 ```
 
 ### Usage
@@ -25,7 +25,7 @@ registerModel({
       ...state,
       count: state.count + 1,
     }),
-    descrement: (state) => ({
+    decrement: (state) => ({
       ...state,
       count: state.count - 1,
     }),
@@ -36,6 +36,7 @@ registerModel({
   },
   effects: {
     async asyncDecrement({ getState, getDispatchers }, ...arg) {
+      const state = getState('testModel');
       console.log(...arg);
 
       const res = await (new Promise(resolve => {

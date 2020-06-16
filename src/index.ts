@@ -1,11 +1,19 @@
 import registerModel from './registerModel';
 import destroyModel from './destroyModel';
-import useModel from './useModel';
+import useModel from './useHooks/useModel';
 import hasModel from './hasModel';
+import connect from './connect';
+import dynamicInject from './dynamicInject';
+import useDynamicInject from './useHooks/useDynamicInject';
 
 export {
+  dynamicInject,
+  useDynamicInject,
+
   registerModel,
   destroyModel,
-  useModel,
   hasModel,
+
+  useModel,
+  connect,
 };
