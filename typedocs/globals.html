@@ -952,13 +952,13 @@ img { max-width: 100%; }
 			<a href="globals.html#dynamicinject" class="tsd-kind-icon">dynamic<wbr>Inject</a>
 		</li>
 		<li class=" tsd-kind-function">
-			<a href="globals.html#dynamicinjectfncomponent" class="tsd-kind-icon">dynamic<wbr>Inject<wbr>FnComponent</a>
-		</li>
-		<li class=" tsd-kind-function">
 			<a href="globals.html#hasmodel" class="tsd-kind-icon">has<wbr>Model</a>
 		</li>
 		<li class=" tsd-kind-function">
 			<a href="globals.html#registermodel" class="tsd-kind-icon">register<wbr>Model</a>
+		</li>
+		<li class=" tsd-kind-function">
+			<a href="globals.html#usedynamicinject" class="tsd-kind-icon">use<wbr>Dynamic<wbr>Inject</a>
 		</li>
 		<li class=" tsd-kind-function">
 			<a href="globals.html#usefirstmountstate" class="tsd-kind-icon">use<wbr>First<wbr>Mount<wbr>State</a>
@@ -982,7 +982,7 @@ img { max-width: 100%; }
 			<h3 id="install">Install</h3>
 			<pre><code class="language-bash">npm i -S white-react-state</code></pre>
 			<h3 id="usage">Usage</h3>
-			<p>注册 model，在函数组件中通过 useModel 拿到 state 和 reducers、effects 方法</p>
+			<p>注册 model, 在函数组件中通过 useModel 拿到 state 和 reducers、effects 方法</p>
 			<pre><code class="language-javascript"><span class="hljs-keyword">import</span> { registerModel, useModel } <span class="hljs-keyword">from</span> <span class="hljs-string">'white-react-state'</span>;
 
 registerModel({
@@ -1006,6 +1006,7 @@ registerModel({
   },
   <span class="hljs-attr">effects</span>: {
     <span class="hljs-keyword">async</span> asyncDecrement({ getState, getDispatchers }, ...arg) {
+      <span class="hljs-keyword">const</span> state = getState(<span class="hljs-string">'testModel'</span>);
       <span class="hljs-built_in">console</span>.log(...arg);
 
       <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> (<span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-params">resolve</span> =&gt;</span> {
@@ -1033,6 +1034,171 @@ registerModel({
     <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
   );
 }</code></pre>
+			<h3 id="api">API</h3>
+			<p>共有 7 个 API, 主要使用的2个: registerModel、useModel, 通常对于函数组件使用更为友好, 下面介绍这些 API: </p>
+			<h4 id="registermodel">registerModel</h4>
+			<p>作为状态管理, 首先应该是一些数据和方法的定义, 这个 api 将会注册这些数据和方法, 使用方式如下: </p>
+			<blockquote>
+				<p>registerModel(modle)</p>
+			</blockquote>
+			<p>其中 model 是数据和方法的定义模型对象, 有以下属性: </p>
+			<ul>
+				<li>namespace<ul>
+						<li>必填, 命名空间, 和其他 model 不可重复</li>
+					</ul>
+				</li>
+				<li>state<ul>
+						<li>必填, 状态数据, 任意类型的数据</li>
+					</ul>
+				</li>
+				<li>reducers<ul>
+						<li>可选, 可定义的纯函数集合, 直接改变状态数据, 改变数据的同时触发相关联的组件更新</li>
+						<li>纯函数的第一个参数是当前 state, 后面的参数是在调用时传入的</li>
+					</ul>
+				</li>
+				<li>effects<ul>
+						<li>可选, 可定义的副作用函数集合, 函数内可以做一些副作用的事情, 如请求数据等</li>
+						<li>函数内部可以是用 this 访问到当前 model 下的 reducers 和 effects 中方法, 如: this.increment()</li>
+						<li>函数的第一个参数是一个对象, 后面的参数为调用时传入的。第一个参数对象如下: <ul>
+								<li>getState 方法, 获取指定 命名空间 的 state, 参数为: <ul>
+										<li>namespace: string, 为指定 命名空间</li>
+										<li>如: const state = getState(&#39;otherModel&#39;)</li>
+									</ul>
+								</li>
+								<li>getDispatchers 方法, 获取指定 命名空间 的 方法(reducers 和 effects 的集合), 参数为: <ul>
+										<li>namespace: string, 为指定 命名空间</li>
+										<li>如: const dispatchers = getDispathcers(&#39;otherModel&#39;)</li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<p>注: 通常使用这个方法, 不能重复注册同一个 命名空间 的 model, 如果重复, 控制台会给出报错提示, 不会覆盖之前的 model; 如果你需要动态注入 model, 根据组件挂载注册 model, 可以使用 useDynamicInject 或 dynamicInject, 详细见下方介绍</p>
+			<h4 id="usemodel">useModel</h4>
+			<p>在函数组件中获取指定的 model 数据, 它是一个 hook, 使用方式如下: </p>
+			<blockquote>
+				<p>const [state, dispatchers] = useModel(namespace);</p>
+			</blockquote>
+			<p>参数 namespace 为指定的 命名空间; 函数返回值是一个长度为 2 的数组, 其内容如下: </p>
+			<ul>
+				<li>下标 0 为 命名空间 下的 state 数据</li>
+				<li>下标 1 为 命名空间 下的 reducers 和 effects 方法集合</li>
+			</ul>
+			<h4 id="connect">connect</h4>
+			<p>一个高阶函数, 为组件获取指定的 model 数据; 实际上内部实现基于 useModel</p>
+			<blockquote>
+				<p>connect(namespace)(Component)</p>
+			</blockquote>
+			<ul>
+				<li>namespace: string | string[], 字符串 或 字符串数组, 为指定的 命名空间</li>
+				<li>Component, 为包裹组件, 其 props 将会接收到 namespace 对应的 model 数据, 包装在其 命名空间 下, 如下: </li>
+			</ul>
+			<pre><code class="language-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> PropTypes <span class="hljs-keyword">from</span> <span class="hljs-string">'prop-types'</span>;
+<span class="hljs-keyword">import</span> { connect } <span class="hljs-keyword">from</span> <span class="hljs-string">'white-react-state'</span>;
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Test</span>(<span class="hljs-params">props</span>) </span>{
+  <span class="hljs-keyword">const</span> { testModel } = props;
+  <span class="hljs-keyword">const</span> { state, dispatchers } = testModel;
+
+  <span class="hljs-built_in">console</span>.log(state, dispatchers);
+
+  <span class="hljs-keyword">return</span> (
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+      xxxx
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+  );
+}
+
+Test.propTypes = {
+  <span class="hljs-attr">testModel</span>: PropTypes.object.isRequired,
+};
+
+Test.defaultProps = {};
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> connect([<span class="hljs-string">'testModel'</span>])(React.memo(Test));</code></pre>
+			<h4 id="usedynamicinject">useDynamicInject</h4>
+			<p>一个 hook, 动态注入 model, 在函数组件挂载时, 注册 model, 效果同 registerModel</p>
+			<blockquote>
+				<p>useDynamicInject(model)</p>
+			</blockquote>
+			<p>model 同 registerModel 中参数一致, 如上</p>
+			<p>注:  函数组件卸载时不会销毁 model, 如果需要可以使用 destroyModel</p>
+			<p>示例: </p>
+			<pre><code class="language-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> { useDynamicInject, useModel } <span class="hljs-keyword">from</span> <span class="hljs-string">'white-react-state'</span>;
+
+<span class="hljs-keyword">const</span> model = {
+  <span class="hljs-attr">namespace</span>: <span class="hljs-string">'testModel'</span>,
+  <span class="hljs-attr">state</span>: <span class="hljs-number">0</span>,
+  <span class="hljs-attr">reducers</span>: {},
+  <span class="hljs-attr">effects</span>: {}
+};
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Test</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-comment">// 动态注入, 在挂载时</span>
+  useDynamicInject(model);
+
+  <span class="hljs-keyword">const</span> [state, dispatchers] = useModel(<span class="hljs-string">'testModel'</span>);
+
+  <span class="hljs-built_in">console</span>.log(state, dispatchers);
+
+  <span class="hljs-keyword">return</span> (
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+      xxxx
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+  );
+}
+
+Test.defaultProps = {};
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> React.memo(Test);</code></pre>
+			<h4 id="dynamicinject">dynamicInject</h4>
+			<p>一个高阶函数, 动态注入 model, 在组件挂载时, 注册 model, 效果同 registerModel; 实际上内部实现基于 useDynamicInject</p>
+			<blockquote>
+				<p>dynamicInject(model)(Component)</p>
+			</blockquote>
+			<p>model 同 registerModel 中参数一致, 如上</p>
+			<p>注:  组件卸载时不会销毁 model, 如果需要可以使用 destroyModel</p>
+			<p>示例: </p>
+			<pre><code class="language-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> { dynamicInject, useModel } <span class="hljs-keyword">from</span> <span class="hljs-string">'white-react-state'</span>;
+
+<span class="hljs-keyword">const</span> model = {
+  <span class="hljs-attr">namespace</span>: <span class="hljs-string">'testModel'</span>,
+  <span class="hljs-attr">state</span>: <span class="hljs-number">0</span>,
+  <span class="hljs-attr">reducers</span>: {},
+  <span class="hljs-attr">effects</span>: {}
+};
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Test</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">const</span> [state, dispatchers] = useModel(<span class="hljs-string">'testModel'</span>);
+
+  <span class="hljs-built_in">console</span>.log(state, dispatchers);
+
+  <span class="hljs-keyword">return</span> (
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+      xxxx
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+  );
+}
+
+Test.defaultProps = {};
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> dynamicInject(model)(React.memo(Test));</code></pre>
+			<h4 id="hasmodel">hasModel</h4>
+			<p>一个方法, 用于判断是否存在指定 命名空间 的 model, 返回值: boolean</p>
+			<blockquote>
+				<p>hasModel(namespace)</p>
+			</blockquote>
+			<p>namespace: string,  为指定的 命名空间</p>
+			<h4 id="destroymodel">destroyModel</h4>
+			<p>一个方法, 销毁指定 命名空间 的 model; 一般来说是不需要使用这个 API 的, 当你真的需要调用时, 请先确保指定的 model 是否被正在活跃的组件引用, 即 connect 和 useModel 正被使用, 当然控制台会给出相应的报错提示, 并不会销毁 model</p>
+			<blockquote>
+				<p>destroyModel(namespace)</p>
+			</blockquote>
 		</div>
 		<section class="tsd-panel-group tsd-index-group">
 			<h2>Index</h2>
@@ -1075,9 +1241,9 @@ registerModel({
 							<li class="tsd-kind-function"><a href="globals.html#connect" class="tsd-kind-icon">connect</a></li>
 							<li class="tsd-kind-function"><a href="globals.html#destroymodel" class="tsd-kind-icon">destroy<wbr>Model</a></li>
 							<li class="tsd-kind-function"><a href="globals.html#dynamicinject" class="tsd-kind-icon">dynamic<wbr>Inject</a></li>
-							<li class="tsd-kind-function"><a href="globals.html#dynamicinjectfncomponent" class="tsd-kind-icon">dynamic<wbr>Inject<wbr>FnComponent</a></li>
 							<li class="tsd-kind-function"><a href="globals.html#hasmodel" class="tsd-kind-icon">has<wbr>Model</a></li>
 							<li class="tsd-kind-function"><a href="globals.html#registermodel" class="tsd-kind-icon">register<wbr>Model</a></li>
+							<li class="tsd-kind-function"><a href="globals.html#usedynamicinject" class="tsd-kind-icon">use<wbr>Dynamic<wbr>Inject</a></li>
 							<li class="tsd-kind-function"><a href="globals.html#usefirstmountstate" class="tsd-kind-icon">use<wbr>First<wbr>Mount<wbr>State</a></li>
 							<li class="tsd-kind-function"><a href="globals.html#usemodel" class="tsd-kind-icon">use<wbr>Model</a></li>
 							<li class="tsd-kind-function"><a href="globals.html#useupdate" class="tsd-kind-icon">use<wbr>Update</a></li>
@@ -1095,8 +1261,8 @@ registerModel({
 				<div class="tsd-signature tsd-kind-icon">Component<wbr>Enhancer<wbr>With<wbr>Props<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in connect.tsx:11</li>
-						<li>Defined in dynamicInject.tsx:13</li>
+						<li>Defined in <a href="https://github.com/nlffeng/white-react-state/blob/2d09ee0/src/connect.tsx#L11">connect.tsx:11</a></li>
+						<li>Defined in <a href="https://github.com/nlffeng/white-react-state/blob/2d09ee0/src/dynamicInject.tsx#L13">dynamicInject.tsx:13</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-type-declaration">
@@ -1127,7 +1293,7 @@ registerModel({
 				<div class="tsd-signature tsd-kind-icon">Connect<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in connect.tsx:13</li>
+						<li>Defined in <a href="https://github.com/nlffeng/white-react-state/blob/2d09ee0/src/connect.tsx#L13">connect.tsx:13</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-type-declaration">
@@ -1135,14 +1301,14 @@ registerModel({
 					<ul class="tsd-parameters">
 						<li class="tsd-parameter-siganture">
 							<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-type-alias tsd-is-not-exported">
-								<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="globals.html#componentenhancerwithprops" class="tsd-signature-type">ComponentEnhancerWithProps</a></li>
+								<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>namespace<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="globals.html#componentenhancerwithprops" class="tsd-signature-type">ComponentEnhancerWithProps</a></li>
 							</ul>
 							<ul class="tsd-descriptions">
 								<li class="tsd-description">
 									<h4 class="tsd-parameters-title">Parameters</h4>
 									<ul class="tsd-parameters">
 										<li>
-											<h5>key: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
+											<h5>namespace: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
 										</li>
 									</ul>
 									<h4 class="tsd-returns-title">Returns <a href="globals.html#componentenhancerwithprops" class="tsd-signature-type">ComponentEnhancerWithProps</a></h4>
@@ -1158,7 +1324,7 @@ registerModel({
 				<div class="tsd-signature tsd-kind-icon">Connected<wbr>Component<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ComponentType</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in connect.tsx:9</li>
+						<li>Defined in <a href="https://github.com/nlffeng/white-react-state/blob/2d09ee0/src/connect.tsx#L9">connect.tsx:9</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1168,7 +1334,7 @@ registerModel({
 				<div class="tsd-signature tsd-kind-icon">Dynamic<wbr>Inject<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in dynamicInject.tsx:15</li>
+						<li>Defined in <a href="https://github.com/nlffeng/white-react-state/blob/2d09ee0/src/dynamicInject.tsx#L15">dynamicInject.tsx:15</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-type-declaration">
@@ -1199,7 +1365,7 @@ registerModel({
 				<div class="tsd-signature tsd-kind-icon">Injected<wbr>Component<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ComponentType</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in dynamicInject.tsx:11</li>
+						<li>Defined in <a href="https://github.com/nlffeng/white-react-state/blob/2d09ee0/src/dynamicInject.tsx#L11">dynamicInject.tsx:11</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1209,7 +1375,7 @@ registerModel({
 				<div class="tsd-signature tsd-kind-icon">Validate<wbr>Same<wbr>Name<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/nlffeng/white-react-state/blob/f46a26d/src/util.ts#L1">util.ts:1</a></li>
+						<li>Defined in <a href="https://github.com/nlffeng/white-react-state/blob/2d09ee0/src/util.ts#L1">util.ts:1</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-type-declaration">
@@ -1259,7 +1425,7 @@ registerModel({
 				<div class="tsd-signature tsd-kind-icon">store<span class="tsd-signature-symbol">:</span> <a href="classes/store.html" class="tsd-signature-type">Store</a><span class="tsd-signature-symbol"> =&nbsp;new Store()</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/nlffeng/white-react-state/blob/f46a26d/src/storeInstance.ts#L7">storeInstance.ts:7</a></li>
+						<li>Defined in <a href="https://github.com/nlffeng/white-react-state/blob/2d09ee0/src/storeInstance.ts#L7">storeInstance.ts:7</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1270,19 +1436,19 @@ registerModel({
 				<a name="connect" class="tsd-anchor"></a>
 				<h3><span class="tsd-flag ts-flagConst">Const</span> connect</h3>
 				<ul class="tsd-signatures tsd-kind-function">
-					<li class="tsd-signature tsd-kind-icon">connect<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span></li>
+					<li class="tsd-signature tsd-kind-icon">connect<span class="tsd-signature-symbol">(</span>namespace<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in connect.tsx:23</li>
+								<li>Defined in <a href="https://github.com/nlffeng/white-react-state/blob/2d09ee0/src/connect.tsx#L23">connect.tsx:23</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
 						<ul class="tsd-parameters">
 							<li>
-								<h5>key: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
+								<h5>namespace: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
 							</li>
 						</ul>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">function</span></h4>
@@ -1311,19 +1477,19 @@ registerModel({
 				<a name="destroymodel" class="tsd-anchor"></a>
 				<h3>destroy<wbr>Model</h3>
 				<ul class="tsd-signatures tsd-kind-function">
-					<li class="tsd-signature tsd-kind-icon">destroy<wbr>Model<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					<li class="tsd-signature tsd-kind-icon">destroy<wbr>Model<span class="tsd-signature-symbol">(</span>namespace<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/nlffeng/white-react-state/blob/f46a26d/src/destroyModel.ts#L9">destroyModel.ts:9</a></li>
+								<li>Defined in <a href="https://github.com/nlffeng/white-react-state/blob/2d09ee0/src/destroyModel.ts#L9">destroyModel.ts:9</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
 						<ul class="tsd-parameters">
 							<li>
-								<h5>key: <span class="tsd-signature-type">string</span></h5>
+								<h5>namespace: <span class="tsd-signature-type">string</span></h5>
 							</li>
 						</ul>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -1340,7 +1506,7 @@ registerModel({
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in dynamicInject.tsx:17</li>
+								<li>Defined in <a href="https://github.com/nlffeng/white-react-state/blob/2d09ee0/src/dynamicInject.tsx#L17">dynamicInject.tsx:17</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1354,45 +1520,22 @@ registerModel({
 				</ul>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-function">
-				<a name="dynamicinjectfncomponent" class="tsd-anchor"></a>
-				<h3>dynamic<wbr>Inject<wbr>FnComponent</h3>
-				<ul class="tsd-signatures tsd-kind-function">
-					<li class="tsd-signature tsd-kind-icon">dynamic<wbr>Inject<wbr>FnComponent<span class="tsd-signature-symbol">(</span>model<span class="tsd-signature-symbol">: </span><a href="interfaces/model.html" class="tsd-signature-type">Model</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-				</ul>
-				<ul class="tsd-descriptions">
-					<li class="tsd-description">
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in useHooks/useDynamicInject.ts:11</li>
-							</ul>
-						</aside>
-						<h4 class="tsd-parameters-title">Parameters</h4>
-						<ul class="tsd-parameters">
-							<li>
-								<h5>model: <a href="interfaces/model.html" class="tsd-signature-type">Model</a></h5>
-							</li>
-						</ul>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-					</li>
-				</ul>
-			</section>
-			<section class="tsd-panel tsd-member tsd-kind-function">
 				<a name="hasmodel" class="tsd-anchor"></a>
 				<h3>has<wbr>Model</h3>
 				<ul class="tsd-signatures tsd-kind-function">
-					<li class="tsd-signature tsd-kind-icon">has<wbr>Model<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					<li class="tsd-signature tsd-kind-icon">has<wbr>Model<span class="tsd-signature-symbol">(</span>namespace<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/nlffeng/white-react-state/blob/f46a26d/src/hasModel.ts#L9">hasModel.ts:9</a></li>
+								<li>Defined in <a href="https://github.com/nlffeng/white-react-state/blob/2d09ee0/src/hasModel.ts#L9">hasModel.ts:9</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
 						<ul class="tsd-parameters">
 							<li>
-								<h5>key: <span class="tsd-signature-type">string</span></h5>
+								<h5>namespace: <span class="tsd-signature-type">string</span></h5>
 							</li>
 						</ul>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -1409,7 +1552,30 @@ registerModel({
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/nlffeng/white-react-state/blob/f46a26d/src/registerModel.ts#L10">registerModel.ts:10</a></li>
+								<li>Defined in <a href="https://github.com/nlffeng/white-react-state/blob/2d09ee0/src/registerModel.ts#L10">registerModel.ts:10</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>model: <a href="interfaces/model.html" class="tsd-signature-type">Model</a></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function">
+				<a name="usedynamicinject" class="tsd-anchor"></a>
+				<h3>use<wbr>Dynamic<wbr>Inject</h3>
+				<ul class="tsd-signatures tsd-kind-function">
+					<li class="tsd-signature tsd-kind-icon">use<wbr>Dynamic<wbr>Inject<span class="tsd-signature-symbol">(</span>model<span class="tsd-signature-symbol">: </span><a href="interfaces/model.html" class="tsd-signature-type">Model</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/nlffeng/white-react-state/blob/2d09ee0/src/useHooks/useDynamicInject.ts#L11">useHooks/useDynamicInject.ts:11</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1432,7 +1598,7 @@ registerModel({
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in useHooks/useFirstMountState.ts:3</li>
+								<li>Defined in <a href="https://github.com/nlffeng/white-react-state/blob/2d09ee0/src/useHooks/useFirstMountState.ts#L3">useHooks/useFirstMountState.ts:3</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -1443,19 +1609,19 @@ registerModel({
 				<a name="usemodel" class="tsd-anchor"></a>
 				<h3>use<wbr>Model</h3>
 				<ul class="tsd-signatures tsd-kind-function">
-					<li class="tsd-signature tsd-kind-icon">use<wbr>Model<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></li>
+					<li class="tsd-signature tsd-kind-icon">use<wbr>Model<span class="tsd-signature-symbol">(</span>namespace<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in useHooks/useModel.ts:10</li>
+								<li>Defined in <a href="https://github.com/nlffeng/white-react-state/blob/2d09ee0/src/useHooks/useModel.ts#L10">useHooks/useModel.ts:10</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
 						<ul class="tsd-parameters">
 							<li>
-								<h5>key: <span class="tsd-signature-type">string</span></h5>
+								<h5>namespace: <span class="tsd-signature-type">string</span></h5>
 							</li>
 						</ul>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h4>
@@ -1472,7 +1638,7 @@ registerModel({
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in useHooks/useUpdate.ts:3</li>
+								<li>Defined in <a href="https://github.com/nlffeng/white-react-state/blob/2d09ee0/src/useHooks/useUpdate.ts#L3">useHooks/useUpdate.ts:3</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">(Anonymous function)</span></h4>
@@ -1489,7 +1655,7 @@ registerModel({
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/nlffeng/white-react-state/blob/f46a26d/src/util.ts#L3">util.ts:3</a></li>
+								<li>Defined in <a href="https://github.com/nlffeng/white-react-state/blob/2d09ee0/src/util.ts#L3">util.ts:3</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>

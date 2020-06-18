@@ -18,7 +18,7 @@ const dynamicInject: DynamicInject = (model) => (Component) => (props) => {
   const namespace = model.namespace;
 
   if (!namespace) {
-    console.error('dynamicInject：请检查是否声明了 namespace');
+    console.error('dynamicInject: 请检查是否声明了 namespace');
     return <Component {...props} />;
   }
 

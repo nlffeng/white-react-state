@@ -10,7 +10,7 @@ type ConnectedComponent = ComponentType;
 
 type ComponentEnhancerWithProps = (Component: ComponentType<any>) => ConnectedComponent;
 
-type Connect = (key: string | string[]) => ComponentEnhancerWithProps;
+type Connect = (namespace: string | string[]) => ComponentEnhancerWithProps;
 
 interface ModelList {
   [propName: string]: {
@@ -20,13 +20,13 @@ interface ModelList {
 }
 
 // TODO 加入优化功能
-const connect: Connect = (key) => {
+const connect: Connect = (namespace) => {
   let keys: string[] = [];
 
-  if (typeof key === 'string') {
-    keys.push(key);
-  } else if (Array.isArray(key)) {
-    keys = key;
+  if (typeof namespace === 'string') {
+    keys.push(namespace);
+  } else if (Array.isArray(namespace)) {
+    keys = namespace;
   }
 
   const length = keys.length;
@@ -44,6 +44,9 @@ const connect: Connect = (key) => {
       };
       i++;
     }
+
+    // TODO 加入 useMemo 优化 modelList
+    // stateArr 集合, 用于第二个参数
 
     return (<Component {...props} {...modelList} />);
   };

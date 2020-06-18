@@ -9,9 +9,9 @@ import { Model, StoreItem } from './types'
 class Store {
   [propName: string]: any
 
-  public add<T>(key: string, model: Model<T>): void {
-    if (key in this) {
-      console.error(`Store: 存在相同的 key:${key}，请重新设置 key`)
+  public add<T>(namespace: string, model: Model<T>): void {
+    if (namespace in this) {
+      console.error(`Store: 存在相同的 namespace: ${namespace}, 请重新设置 namespace`)
       return
     }
 
@@ -23,7 +23,7 @@ class Store {
     if (sameKeys) {
       const str = sameKeys.join('、')
       console.warn(
-        `Store：${key} 内部 reducers 和 effects 存在同名的 kye：${str}，将以 reducers 中的 key 有效`
+        `Store: ${namespace} 内部 reducers 和 effects 存在同名的 namespace: ${str}, 将以 reducers 中的 namespace 有效`
       )
 
       sameKeys.forEach((k: string) => {
@@ -33,7 +33,7 @@ class Store {
       })
     }
 
-    this[key] = {
+    this[namespace] = {
       state,
       reducers,
       effects,
@@ -41,16 +41,16 @@ class Store {
     }
 
     // 处理 reducers 和 effects
-    this._relateMethods(key)
+    this._relateMethods(namespace)
 
-    this[key].dispatchers = {
-      ...this[key].reducers,
-      ...this[key].effects
+    this[namespace].dispatchers = {
+      ...this[namespace].reducers,
+      ...this[namespace].effects
     }
   }
 
-  private _relateMethods(key: string): void {
-    const stateObj: StoreItem = this[key]
+  private _relateMethods(namespace: string): void {
+    const stateObj: StoreItem = this[namespace]
     const subscribes = stateObj.subscribes
 
     const reducers = stateObj.reducers
@@ -59,18 +59,18 @@ class Store {
     const effects = stateObj.effects
     stateObj.effects = {}
 
-    // 处理 reducers，绑定函数上下文
+    // 处理 reducers, 绑定函数上下文
     Object.keys(reducers).forEach((reducerKey: string) => {
       const fn: any = reducers[reducerKey]
 
       if (typeof fn !== 'function') {
-        console.error(`Store：${key} 中 reducers 对应的 ${reducerKey} 应该是函数`)
+        console.error(`Store: ${namespace} 中 reducers 对应的 ${reducerKey} 应该是函数`)
         return
       }
 
       stateObj.reducers[reducerKey] = (...arg) => {
         const newState = fn(stateObj.state, ...arg)
-        this.setState(key, newState)
+        this.setState(namespace, newState)
 
         subscribes.forEach((callback: () => void) => {
           callback()
@@ -78,7 +78,7 @@ class Store {
       }
     })
 
-    // 处理 effects，绑定上下文，并处理一步
+    // 处理 effects, 绑定上下文, 并处理一步
     const methods = {
       getState: this.getState.bind(this),
       getDispatchers: this.getDispatchers.bind(this)
@@ -87,7 +87,7 @@ class Store {
       const fn: any = effects[effectKey]
 
       if (typeof fn !== 'function') {
-        console.error(`Store：${key} 中 effects 对应的 ${effectKey} 应该是函数`)
+        console.error(`Store: ${namespace} 中 effects 对应的 ${effectKey} 应该是函数`)
         return
       }
 
@@ -97,8 +97,8 @@ class Store {
     })
   }
 
-  public subscribe(key: string, callback: () => void): () => void {
-    const stateObj: StoreItem = this[key]
+  public subscribe(namespace: string, callback: () => void): () => void {
+    const stateObj: StoreItem = this[namespace]
     stateObj.subscribes.push(callback)
     const i = stateObj.subscribes.length - 1
     return () => {
@@ -106,8 +106,8 @@ class Store {
     }
   }
 
-  public getState(key: string): any {
-    const stateObj: StoreItem = this[key]
+  public getState(namespace: string): any {
+    const stateObj: StoreItem = this[namespace]
 
     if (!stateObj) {
       return
@@ -116,8 +116,8 @@ class Store {
     return stateObj.state
   }
 
-  public setState(key: string, state: any): void {
-    const stateObj: StoreItem = this[key]
+  public setState(namespace: string, state: any): void {
+    const stateObj: StoreItem = this[namespace]
 
     if (!stateObj) {
       return
@@ -126,8 +126,8 @@ class Store {
     stateObj.state = state
   }
 
-  public getDispatchers(key: string): { [propName: string]: (...arg: any[]) => any } {
-    const stateObj: StoreItem = this[key]
+  public getDispatchers(namespace: string): { [propName: string]: (...arg: any[]) => any } {
+    const stateObj: StoreItem = this[namespace]
 
     if (!stateObj) {
       return {}

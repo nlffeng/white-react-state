@@ -972,13 +972,13 @@ img { max-width: 100%; }
 			<a href="../globals.html#dynamicinject" class="tsd-kind-icon">dynamic<wbr>Inject</a>
 		</li>
 		<li class=" tsd-kind-function">
-			<a href="../globals.html#dynamicinjectfncomponent" class="tsd-kind-icon">dynamic<wbr>Inject<wbr>FnComponent</a>
-		</li>
-		<li class=" tsd-kind-function">
 			<a href="../globals.html#hasmodel" class="tsd-kind-icon">has<wbr>Model</a>
 		</li>
 		<li class=" tsd-kind-function">
 			<a href="../globals.html#registermodel" class="tsd-kind-icon">register<wbr>Model</a>
+		</li>
+		<li class=" tsd-kind-function">
+			<a href="../globals.html#usedynamicinject" class="tsd-kind-icon">use<wbr>Dynamic<wbr>Inject</a>
 		</li>
 		<li class=" tsd-kind-function">
 			<a href="../globals.html#usefirstmountstate" class="tsd-kind-icon">use<wbr>First<wbr>Mount<wbr>State</a>
@@ -1032,19 +1032,19 @@ img { max-width: 100%; }
 				<a name="_relatemethods" class="tsd-anchor"></a>
 				<h3><span class="tsd-flag ts-flagPrivate">Private</span> _relate<wbr>Methods</h3>
 				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-					<li class="tsd-signature tsd-kind-icon">_relate<wbr>Methods<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					<li class="tsd-signature tsd-kind-icon">_relate<wbr>Methods<span class="tsd-signature-symbol">(</span>namespace<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/nlffeng/white-react-state/blob/f46a26d/src/Store.ts#L52">Store.ts:52</a></li>
+								<li>Defined in <a href="https://github.com/nlffeng/white-react-state/blob/2d09ee0/src/Store.ts#L52">Store.ts:52</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
 						<ul class="tsd-parameters">
 							<li>
-								<h5>key: <span class="tsd-signature-type">string</span></h5>
+								<h5>namespace: <span class="tsd-signature-type">string</span></h5>
 							</li>
 						</ul>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -1055,13 +1055,13 @@ img { max-width: 100%; }
 				<a name="add" class="tsd-anchor"></a>
 				<h3>add</h3>
 				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-					<li class="tsd-signature tsd-kind-icon">add&lt;T&gt;<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, model<span class="tsd-signature-symbol">: </span><a href="../interfaces/model.html" class="tsd-signature-type">Model</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					<li class="tsd-signature tsd-kind-icon">add&lt;T&gt;<span class="tsd-signature-symbol">(</span>namespace<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, model<span class="tsd-signature-symbol">: </span><a href="../interfaces/model.html" class="tsd-signature-type">Model</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/nlffeng/white-react-state/blob/f46a26d/src/Store.ts#L12">Store.ts:12</a></li>
+								<li>Defined in <a href="https://github.com/nlffeng/white-react-state/blob/2d09ee0/src/Store.ts#L12">Store.ts:12</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -1073,7 +1073,7 @@ img { max-width: 100%; }
 						<h4 class="tsd-parameters-title">Parameters</h4>
 						<ul class="tsd-parameters">
 							<li>
-								<h5>key: <span class="tsd-signature-type">string</span></h5>
+								<h5>namespace: <span class="tsd-signature-type">string</span></h5>
 							</li>
 							<li>
 								<h5>model: <a href="../interfaces/model.html" class="tsd-signature-type">Model</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h5>
@@ -1087,19 +1087,19 @@ img { max-width: 100%; }
 				<a name="getdispatchers" class="tsd-anchor"></a>
 				<h3>get<wbr>Dispatchers</h3>
 				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-					<li class="tsd-signature tsd-kind-icon">get<wbr>Dispatchers<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></li>
+					<li class="tsd-signature tsd-kind-icon">get<wbr>Dispatchers<span class="tsd-signature-symbol">(</span>namespace<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/nlffeng/white-react-state/blob/f46a26d/src/Store.ts#L129">Store.ts:129</a></li>
+								<li>Defined in <a href="https://github.com/nlffeng/white-react-state/blob/2d09ee0/src/Store.ts#L129">Store.ts:129</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
 						<ul class="tsd-parameters">
 							<li>
-								<h5>key: <span class="tsd-signature-type">string</span></h5>
+								<h5>namespace: <span class="tsd-signature-type">string</span></h5>
 							</li>
 						</ul>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">object</span></h4>
@@ -1133,19 +1133,19 @@ img { max-width: 100%; }
 				<a name="getstate" class="tsd-anchor"></a>
 				<h3>get<wbr>State</h3>
 				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-					<li class="tsd-signature tsd-kind-icon">get<wbr>State<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					<li class="tsd-signature tsd-kind-icon">get<wbr>State<span class="tsd-signature-symbol">(</span>namespace<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/nlffeng/white-react-state/blob/f46a26d/src/Store.ts#L109">Store.ts:109</a></li>
+								<li>Defined in <a href="https://github.com/nlffeng/white-react-state/blob/2d09ee0/src/Store.ts#L109">Store.ts:109</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
 						<ul class="tsd-parameters">
 							<li>
-								<h5>key: <span class="tsd-signature-type">string</span></h5>
+								<h5>namespace: <span class="tsd-signature-type">string</span></h5>
 							</li>
 						</ul>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
@@ -1156,19 +1156,19 @@ img { max-width: 100%; }
 				<a name="setstate" class="tsd-anchor"></a>
 				<h3>set<wbr>State</h3>
 				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-					<li class="tsd-signature tsd-kind-icon">set<wbr>State<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, state<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					<li class="tsd-signature tsd-kind-icon">set<wbr>State<span class="tsd-signature-symbol">(</span>namespace<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, state<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/nlffeng/white-react-state/blob/f46a26d/src/Store.ts#L119">Store.ts:119</a></li>
+								<li>Defined in <a href="https://github.com/nlffeng/white-react-state/blob/2d09ee0/src/Store.ts#L119">Store.ts:119</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
 						<ul class="tsd-parameters">
 							<li>
-								<h5>key: <span class="tsd-signature-type">string</span></h5>
+								<h5>namespace: <span class="tsd-signature-type">string</span></h5>
 							</li>
 							<li>
 								<h5>state: <span class="tsd-signature-type">any</span></h5>
@@ -1182,19 +1182,19 @@ img { max-width: 100%; }
 				<a name="subscribe" class="tsd-anchor"></a>
 				<h3>subscribe</h3>
 				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-					<li class="tsd-signature tsd-kind-icon">subscribe<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span></li>
+					<li class="tsd-signature tsd-kind-icon">subscribe<span class="tsd-signature-symbol">(</span>namespace<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/nlffeng/white-react-state/blob/f46a26d/src/Store.ts#L100">Store.ts:100</a></li>
+								<li>Defined in <a href="https://github.com/nlffeng/white-react-state/blob/2d09ee0/src/Store.ts#L100">Store.ts:100</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
 						<ul class="tsd-parameters">
 							<li>
-								<h5>key: <span class="tsd-signature-type">string</span></h5>
+								<h5>namespace: <span class="tsd-signature-type">string</span></h5>
 							</li>
 							<li>
 								<h5>callback: <span class="tsd-signature-type">function</span></h5>
