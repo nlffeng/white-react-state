@@ -1,6 +1,6 @@
 {
   "name": "white-react-state",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "基于 useState 实现的轻量状态管理",
   "keywords": ["react", "state", "react state", "react-state"],
   "main": "dist/white-react-state.umd.js",
