@@ -100,9 +100,12 @@ class Store {
   public subscribe(namespace: string, callback: () => void): () => void {
     const stateObj: StoreItem = this[namespace]
     stateObj.subscribes.push(callback)
-    const i = stateObj.subscribes.length - 1
+
     return () => {
-      stateObj.subscribes.splice(i, 1)
+      const i = stateObj.subscribes.findIndex((it) => callback === it)
+      if (i !== -1) {
+        stateObj.subscribes.splice(i, 1)
+      }
     }
   }
 
