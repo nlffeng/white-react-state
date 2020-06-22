@@ -30,12 +30,12 @@
     "test:watch": "jest --coverage --watch",
     "test:prod": "npm run lint && npm run test -- --no-cache",
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
+    "precommit": "lint-staged",
     "commit": "git add -A && git-cz",
-    "semantic-release": "semantic-release",
+    "prepub": "npm run test:prod && npm run build",
     "deploy-docs": "ts-node tools/gh-pages-publish",
     "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
-    "precommit": "lint-staged",
-    "pub": "npm run build && npm publish"
+    "semantic-release": "semantic-release"
   },
   "lint-staged": {
     "{src,test}/**/*.ts": [
@@ -109,6 +109,10 @@
   "devDependencies": {
     "@commitlint/cli": "^7.1.2",
     "@commitlint/config-conventional": "^7.1.2",
+    "@semantic-release/changelog": "^5.0.0",
+    "@semantic-release/git": "^9.0.0",
+    "@semantic-release/npm": "^7.0.3",
+    "@testing-library/react-hooks": "^3.2.1",
     "@types/jest": "^23.3.2",
     "@types/node": "^10.11.0",
     "@types/react": "^16.9.36",
