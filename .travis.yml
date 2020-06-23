@@ -6,10 +6,11 @@ notifications:
 node_js:
   - '10'
 script:
-  - npm run prepub
+  - npm run prepub:test
 after_success:
   # - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then npm run semantic-release; fi
-  - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then npm run deploy-docs; fi
+  # - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then npm run deploy-docs; fi
+  - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then npm run deploy-docs; fi
 branches:
   except:
     - /^v\d+\.\d+\.\d+$/

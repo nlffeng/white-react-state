@@ -33,6 +33,7 @@
     "precommit": "lint-staged",
     "commit": "git add -A && git-cz",
     "prepub": "npm run test:prod && npm run build",
+    "prepub:test": "npm run build",
     "deploy-docs": "ts-node tools/gh-pages-publish",
     "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
     "semantic-release": "semantic-release"
