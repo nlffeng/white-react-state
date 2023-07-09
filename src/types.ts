@@ -13,7 +13,7 @@ export interface Model<T = any> {
 export interface StoreItem<T = any> {
   state: T
   reducers: {
-    [propName: string]: (prevState: T) => T
+    [propName: string]: (prevState: T, ...arg: any[]) => T
   }
   effects: {
     // TODO
