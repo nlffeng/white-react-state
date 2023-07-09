@@ -26,7 +26,7 @@ class Store {
         `Store: ${namespace} 内部 reducers 和 effects 存在同名的 namespace: ${str}, 将以 reducers 中的 namespace 有效`
       )
 
-      sameKeys.forEach((k: string) => {
+      sameKeys.forEach((k) => {
         if (effects[k]) {
           delete effects[k]
         }

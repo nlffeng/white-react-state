@@ -9,7 +9,7 @@ import store from '../storeInstance'
 // TODO 加入优化功能, 第二个参数可以浅比较指定 state 判断是否触发组件更新
 export default function useModel(namespace: string) {
   if (!namespace) {
-    console.error(`useModel: 缺少参数 namespace`)
+    console.error('useModel: 缺少参数 namespace')
     return []
   }
 
